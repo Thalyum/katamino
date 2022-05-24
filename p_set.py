@@ -122,7 +122,7 @@ def get_color_by_id(p_id):
 def generate_rotation_set(piece_geo):
     """From one basic piece, generate all the possible position of the piece:
 
-    (4 rotation + rotation of the symmetric)
+    (4 rotation + rotation of the symmetric). Omit any repetitive pattern
     """
     rot_set = []
     p = piece_geo
@@ -135,9 +135,11 @@ def generate_rotation_set(piece_geo):
         # align piece with 'left'
         while not p[:, 0].any():
             p = np.roll(p, (0, -1), axis=(0, 1))
-        rot_set.append(p)
+        if not np.any([np.array_equal(p, x) for x in rot_set]):
+            rot_set.append(p)
     p = piece_geo.T
-    rot_set.append(p)
+    if not np.any([np.array_equal(p, x) for x in rot_set]):
+        rot_set.append(p)
     for i in range(3):
         p = np.rot90(p)
         # align piece with 'top'
@@ -146,7 +148,8 @@ def generate_rotation_set(piece_geo):
         # align piece with 'left'
         while not p[:, 0].any():
             p = np.roll(p, (0, -1), axis=(0, 1))
-        rot_set.append(p)
+        if not np.any([np.array_equal(p, x) for x in rot_set]):
+            rot_set.append(p)
     return rot_set
 
 
@@ -194,12 +197,16 @@ def check_piece(piece, grid):
                 if i == 0 and j <= prev_y:
                     continue
                 coord = (prev_x + i, j)
-                validated_try = already_tried + index
-                p_id = piece["id"]
+                # TODO: let's say we tried a position, and then we try the
+                # position right to its right. Depending on the piece geometry
+                # and grid fulfillment, some matrix element may be checked
+                # multiple times. Maybe we can add some kind of 'memory'
+                # for the places that are OK. Or maybe it is not worth it.
                 if check_piece_fit_in_place(p, coord, grid):
-                    put_piece_in_grid(p, coord, grid, p_id)
+                    put_piece_in_grid(p, coord, grid, piece["id"])
                     # register the new position we validated to avoid
                     # trying the same things over and over again
+                    validated_try = already_tried + index
                     piece["tried"] = validated_try
                     piece["coord"] = coord
                     return True
