@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-from copy import deepcopy
-
 import p_set
 
 Colors = {

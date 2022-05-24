@@ -6,8 +6,6 @@
 
 import numpy as np
 
-import color
-
 P_MAX_SIZE = 4
 P_MIN_SIZE = 1
 
