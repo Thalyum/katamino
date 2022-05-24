@@ -6,8 +6,6 @@
 # and/or 4-unit tall)
 # Each piece will be at least 1-unit wide or tall
 
-from copy import deepcopy
-
 import numpy as np
 
 import color
