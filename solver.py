@@ -42,18 +42,19 @@ remaining_set = [
     p_set.light_green_p,
     p_set.yellow_p,
 ]
-# prepare the grid n°49
+# prepare the grid n°62
 for i in range(5):
-    for j in range(4):
+    for j in range(3):
         grid[i, j] = 42
+grid[0, 3] = 42
 grid[0, 4] = 42
 grid[0, 5] = 42
+grid[1, 3] = 42
 grid[1, 4] = 42
-remaining_set.remove(p_set.white_p)
-remaining_set.remove(p_set.beige_p)
-remaining_set.remove(p_set.pink_p)
+remaining_set.remove(p_set.gray_p)
+remaining_set.remove(p_set.green_p)
 remaining_set.remove(p_set.blue_p)
-remaining_set.remove(p_set.cyan_p)
+remaining_set.remove(p_set.yellow_p)
 
 color.print_colored_grid(grid)
 
