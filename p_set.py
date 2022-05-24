@@ -16,31 +16,31 @@ def generate_rotation_set(piece_geo):
     (4 rotation + rotation of the symmetric). Omit any repetitive pattern
     """
     rot_set = []
-    p = piece_geo
-    rot_set.append(p)
-    for i in range(3):
-        p = np.rot90(p)
+    rotated_piece = piece_geo
+    rot_set.append(rotated_piece)
+    for _ in range(3):
+        rotated_piece = np.rot90(rotated_piece)
         # align piece with 'top'
-        while not p[0, :].any():
-            p = np.roll(p, (-1, 0), axis=(0, 1))
+        while not rotated_piece[0, :].any():
+            rotated_piece = np.roll(rotated_piece, (-1, 0), axis=(0, 1))
         # align piece with 'left'
-        while not p[:, 0].any():
-            p = np.roll(p, (0, -1), axis=(0, 1))
-        if not np.any([np.array_equal(p, x) for x in rot_set]):
-            rot_set.append(p)
-    p = piece_geo.T
-    if not np.any([np.array_equal(p, x) for x in rot_set]):
-        rot_set.append(p)
-    for i in range(3):
-        p = np.rot90(p)
+        while not rotated_piece[:, 0].any():
+            rotated_piece = np.roll(rotated_piece, (0, -1), axis=(0, 1))
+        if not np.any([np.array_equal(rotated_piece, x) for x in rot_set]):
+            rot_set.append(rotated_piece)
+    rotated_piece = piece_geo.T
+    if not np.any([np.array_equal(rotated_piece, x) for x in rot_set]):
+        rot_set.append(rotated_piece)
+    for _ in range(3):
+        rotated_piece = np.rot90(rotated_piece)
         # align piece with 'top'
-        while not p[0, :].any():
-            p = np.roll(p, (-1, 0), axis=(0, 1))
+        while not rotated_piece[0, :].any():
+            rotated_piece = np.roll(rotated_piece, (-1, 0), axis=(0, 1))
         # align piece with 'left'
-        while not p[:, 0].any():
-            p = np.roll(p, (0, -1), axis=(0, 1))
-        if not np.any([np.array_equal(p, x) for x in rot_set]):
-            rot_set.append(p)
+        while not rotated_piece[:, 0].any():
+            rotated_piece = np.roll(rotated_piece, (0, -1), axis=(0, 1))
+        if not np.any([np.array_equal(rotated_piece, x) for x in rot_set]):
+            rot_set.append(rotated_piece)
     return rot_set
 
 
@@ -178,25 +178,25 @@ def get_color_by_id(p_id):
 
 def check_piece_fit_in_place(p_geo, coord, grid):
     """Check if the given piece can fit in the given location"""
-    x = coord[0]
-    y = coord[1]
+    coord_x = coord[0]
+    coord_y = coord[1]
     (height, width) = p_geo.shape
     for i in range(height):
         for j in range(width):
-            if p_geo[i, j] != 0 and grid[x + i, y + j] != 0:
+            if p_geo[i, j] != 0 and grid[coord_x + i, coord_y + j] != 0:
                 return False
     return True
 
 
 def put_piece_in_grid(p_geo, coord, grid, p_id):
     """Add given piece into the grid"""
-    x = coord[0]
-    y = coord[1]
+    coord_x = coord[0]
+    coord_y = coord[1]
     (height, width) = p_geo.shape
     for i in range(height):
         for j in range(width):
             if p_geo[i, j] != 0:
-                grid[x + i, y + j] = p_id
+                grid[coord_x + i, coord_y + j] = p_id
 
 
 def check_piece(piece, grid):
@@ -210,7 +210,7 @@ def check_piece(piece, grid):
     (prev_x, prev_y) = piece["coord"]
     # first, iterate over the rotation set of the piece
     # skip the piece position we already tried
-    for (index, p) in enumerate(rot_set[already_tried:]):
+    for (index, piece_attempted) in enumerate(rot_set[already_tried:]):
         # second, iterate over the all grid
         # remove last 3 lines and 3 last columns
         for i in range(height - (P_MAX_SIZE - P_MIN_SIZE) - prev_x):
@@ -224,8 +224,8 @@ def check_piece(piece, grid):
                 # and grid fulfillment, some matrix element may be checked
                 # multiple times. Maybe we can add some kind of 'memory'
                 # for the places that are OK. Or maybe it is not worth it.
-                if check_piece_fit_in_place(p, coord, grid):
-                    put_piece_in_grid(p, coord, grid, piece["id"])
+                if check_piece_fit_in_place(piece_attempted, coord, grid):
+                    put_piece_in_grid(piece_attempted, coord, grid, piece["id"])
                     # register the new position we validated to avoid
                     # trying the same things over and over again
                     validated_try = already_tried + index
