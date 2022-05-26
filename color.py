@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+from copy import deepcopy
+
 import p_set
 
 Colors = {
@@ -29,21 +31,21 @@ def background(color, text):
 
 def print_colored_grid(grid):
     print("---")
-    # remove last 3 lines and 3 last columns
-    for line in grid[0:-3, 0:-3]:
+    for line in grid:
         for p_id in line:
             color = p_set.get_color_by_id(p_id)
             print(background(Colors[color], str(p_id).ljust(3, " ")), end="")
         print("")
 
 
-# def print_attempt(p_geo, coord, grid):
-#     attempt_grid = deepcopy(grid)
-#     x = coord[0]
-#     y = coord[1]
-#     (height, width) = p_geo.shape
-#     for i in range(height):
-#         for j in range(width):
-#             if p_geo[i, j] != 0:
-#                 attempt_grid[x + i, y + j] = 2
-#     print_colored_grid(attempt_grid)
+def print_attempt(p_geo, coord, grid):
+    attempt_grid = deepcopy(grid)
+    x = coord[0]
+    y = coord[1]
+    (height, width) = p_geo.shape
+    for i in range(height):
+        for j in range(width):
+            if p_geo[i, j] != 0:
+                attempt_grid[x + i, y + j] = 2
+    print_colored_grid(attempt_grid)
+    input()

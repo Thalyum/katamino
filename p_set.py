@@ -1,13 +1,8 @@
 #!/usr/bin/env python3
 
-# Each piece will fit in a 4x4 square (meaning will be at most 4-unit wide
-# and/or 4-unit tall)
-# Each piece will be at least 1-unit wide or tall
-
 import numpy as np
 
-P_MAX_SIZE = 4
-P_MIN_SIZE = 1
+import color
 
 
 def generate_rotation_set(piece_geo):
@@ -20,12 +15,6 @@ def generate_rotation_set(piece_geo):
     rot_set.append(rotated_piece)
     for _ in range(3):
         rotated_piece = np.rot90(rotated_piece)
-        # align piece with 'top'
-        while not rotated_piece[0, :].any():
-            rotated_piece = np.roll(rotated_piece, (-1, 0), axis=(0, 1))
-        # align piece with 'left'
-        while not rotated_piece[:, 0].any():
-            rotated_piece = np.roll(rotated_piece, (0, -1), axis=(0, 1))
         if not np.any([np.array_equal(rotated_piece, x) for x in rot_set]):
             rot_set.append(rotated_piece)
     rotated_piece = piece_geo.T
@@ -34,11 +23,6 @@ def generate_rotation_set(piece_geo):
     for _ in range(3):
         rotated_piece = np.rot90(rotated_piece)
         # align piece with 'top'
-        while not rotated_piece[0, :].any():
-            rotated_piece = np.roll(rotated_piece, (-1, 0), axis=(0, 1))
-        # align piece with 'left'
-        while not rotated_piece[:, 0].any():
-            rotated_piece = np.roll(rotated_piece, (0, -1), axis=(0, 1))
         if not np.any([np.array_equal(rotated_piece, x) for x in rot_set]):
             rot_set.append(rotated_piece)
     return rot_set
@@ -46,108 +30,84 @@ def generate_rotation_set(piece_geo):
 
 green_p = {
     "id": 1,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 0, 0], [0, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 0, 0], [0, 1, 1, 1]])),
     "color": "green",
     "tried": 0,
     "coord": (0, -1),
 }
 orange_p = {
     "id": 2,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 1, 0], [1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 1], [1, 0, 0]])),
     "color": "orange",
     "tried": 0,
     "coord": (0, -1),
 }
 red_p = {
     "id": 3,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 1, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 1], [1, 1, 0]])),
     "color": "red",
     "tried": 0,
     "coord": (0, -1),
 }
 cyan_p = {
     "id": 4,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 1, 0], [1, 0, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 1], [1, 0, 0], [1, 0, 0]])),
     "color": "cyan",
     "tried": 0,
     "coord": (0, -1),
 }
 gray_p = {
     "id": 5,
-    "geo": generate_rotation_set(
-        np.array([[0, 1, 0, 0], [1, 1, 1, 0], [0, 1, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[0, 1, 0], [1, 1, 1], [0, 1, 0]])),
     "color": "gray",
     "tried": 0,
     "coord": (0, -1),
 }
 blue_p = {
     "id": 6,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 1, 1], [1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 1, 1], [1, 0, 0, 0]])),
     "color": "blue",
     "tried": 0,
     "coord": (0, -1),
 }
 white_p = {
     "id": 7,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1], [1, 0]])),
     "color": "white",
     "tried": 0,
     "coord": (0, -1),
 }
 pink_p = {
     "id": 8,
-    "geo": generate_rotation_set(
-        np.array([[0, 1, 1, 0], [1, 1, 0, 0], [1, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[0, 1, 1], [1, 1, 0], [1, 0, 0]])),
     "color": "pink",
     "tried": 0,
     "coord": (0, -1),
 }
 purple_p = {
     "id": 9,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 1, 1], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 1, 1]])),
     "color": "purple",
     "tried": 0,
     "coord": (0, -1),
 }
 beige_p = {
     "id": 10,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 1, 1], [0, 0, 1, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 1, 1], [0, 0, 1, 0]])),
     "color": "beige",
     "tried": 0,
     "coord": (0, -1),
 }
 light_green_p = {
     "id": 11,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 0, 0], [1, 1, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1], [1, 1]])),
     "color": "l_green",
     "tried": 0,
     "coord": (0, -1),
 }
 yellow_p = {
     "id": 12,
-    "geo": generate_rotation_set(
-        np.array([[1, 1, 1, 0], [1, 0, 1, 0], [0, 0, 0, 0], [0, 0, 0, 0]])
-    ),
+    "geo": generate_rotation_set(np.array([[1, 1, 1], [1, 0, 1]])),
     "color": "yellow",
     "tried": 0,
     "coord": (0, -1),
@@ -180,6 +140,7 @@ def check_piece_fit_in_place(p_geo, coord, grid):
     """Check if the given piece can fit in the given location"""
     coord_x = coord[0]
     coord_y = coord[1]
+    # color.print_attempt(p_geo, coord, grid)
     (height, width) = p_geo.shape
     for i in range(height):
         for j in range(width):
@@ -204,17 +165,17 @@ def check_piece(piece, grid):
 
     Return first place available
     """
-    (height, width) = grid.shape
+    (g_height, g_width) = grid.shape
     rot_set = piece["geo"]
     already_tried = piece["tried"]
     (prev_x, prev_y) = piece["coord"]
     # first, iterate over the rotation set of the piece
-    # skip the piece position we already tried
+    # skip the pieces we already tried
     for (index, piece_attempted) in enumerate(rot_set[already_tried:]):
         # second, iterate over the all grid
-        # remove last 3 lines and 3 last columns
-        for i in range(height - (P_MAX_SIZE - P_MIN_SIZE) - prev_x):
-            for j in range(width - (P_MAX_SIZE - P_MIN_SIZE)):
+        (p_height, p_width) = piece_attempted.shape
+        for i in range(g_height - p_height + 1 - prev_x):
+            for j in range(g_width - p_width + 1):
                 # get to previous position
                 if i == 0 and j <= prev_y:
                     continue
