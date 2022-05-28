@@ -48,8 +48,14 @@ while remaining_set:
     piece = remaining_set.pop()
     if p_set.check_piece(piece, grid):
         # color.print_colored_grid(grid)
-        # remember the piece we just put
-        placed_set.append(piece)
+        places_left = p_set.nb_holes_in_grid(grid)
+        if places_left > len(remaining_set):
+            p_set.remove_piece_from_grid(piece, grid)
+            # put the piece back into the list
+            remaining_set.append(piece)
+        else:
+            # remember the piece we just put
+            placed_set.append(piece)
     else:
         # reset the piece try counter and position
         piece["tried"] = 0

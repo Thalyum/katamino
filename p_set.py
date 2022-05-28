@@ -4,6 +4,8 @@ import numpy as np
 
 import color
 
+DFS_MARKING = 127
+
 
 def generate_rotation_set(piece_geo):
     """From one basic piece, generate all the possible position of the piece:
@@ -209,3 +211,29 @@ def remove_piece_from_grid(piece, grid):
         for j in range(width):
             if grid[i, j] == p_id:
                 grid[i, j] = 0
+
+
+def dfs_grid(grid, coord):
+    (i, j) = coord
+    grid[i, j] = DFS_MARKING
+    (height, width) = grid.shape
+    for ni, nj in [(i + 1, j), (i, j + 1), (i - 1, j), (i, j - 1)]:
+        if 0 <= ni < height and 0 <= nj < width:
+            if grid[ni, nj] == 0:
+                dfs_grid(grid, (ni, nj))
+
+
+def nb_holes_in_grid(grid):
+    nb_holes = 0
+    (height, width) = grid.shape
+    for i in range(height):
+        for j in range(width):
+            if grid[i, j] == 0:
+                nb_holes += 1
+                dfs_grid(grid, (i, j))
+    # cleanup grid
+    for i in range(height):
+        for j in range(width):
+            if grid[i, j] == DFS_MARKING:
+                grid[i, j] = 0
+    return nb_holes
