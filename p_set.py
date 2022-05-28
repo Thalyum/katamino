@@ -194,7 +194,7 @@ def check_piece(piece, grid):
                     piece["coord"] = coord
                     return True
         # changing piece rotation: reset coordinate
-        (prev_x, prev_y) = (0, 0)
+        (prev_x, prev_y) = (0, -1)
     return False
 
 
