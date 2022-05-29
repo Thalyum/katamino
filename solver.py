@@ -3,6 +3,8 @@
 # This game requires the player to fill a 11x5 grid with predefined geometric
 # pieces
 
+import sys
+
 import numpy as np
 
 import color
@@ -60,11 +62,14 @@ while remaining_set:
         # reset the piece try counter and position
         piece["tried"] = 0
         piece["coord"] = (0, -1)
+        # put the piece into the list
         remaining_set.append(piece)
-        # and go back to the previous state
+        # go back to the previous state
         if placed_set:
             previous_piece = placed_set.pop()
             p_set.remove_piece_from_grid(previous_piece, grid)
             remaining_set.append(previous_piece)
+        else:
+            sys.exit("Puzzle cannot be solved")
 
 color.print_colored_grid(grid)
