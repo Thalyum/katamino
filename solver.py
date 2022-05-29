@@ -55,11 +55,16 @@ while remaining_set:
     piece = remaining_set.pop()
     if p_set.check_piece(piece, grid):
         # color.print_colored_grid(grid)
+        # update min_size if needed (i.e. if we just placed the smaller piece)
+        if piece["size"] == min_size and remaining_set:
+            min_size = min([p["size"] for p in remaining_set])
         places_left = p_set.nb_holes_in_grid(grid, min_size)
         if places_left == p_set.ERR_TOO_SMALL or places_left > len(remaining_set):
             p_set.remove_piece_from_grid(piece, grid)
             # put the piece back into the list
             remaining_set.append(piece)
+            # update min_size as we put the piece back in the list
+            min_size = min(min_size, piece["size"])
         else:
             # remember the piece we just put
             placed_set.append(piece)
