@@ -39,6 +39,15 @@ remaining_set.remove(p_set.white_p)
 remaining_set.remove(p_set.orange_p)
 remaining_set.remove(p_set.blue_p)
 
+# compute the size of each piece we have to place,
+# and keep the smaller one
+min_size = None
+for piece in remaining_set:
+    piece_sz = np.sum(piece["geo"][0])
+    piece["size"] = piece_sz
+    if not min_size or piece_sz < min_size:
+        min_size = piece_sz
+
 color.print_colored_grid(grid)
 
 placed_set = []
@@ -46,7 +55,7 @@ while remaining_set:
     piece = remaining_set.pop()
     if p_set.check_piece(piece, grid):
         # color.print_colored_grid(grid)
-        places_left = p_set.nb_holes_in_grid(grid)
+        places_left = p_set.nb_holes_in_grid(grid, min_size)
         if places_left == p_set.ERR_TOO_SMALL or places_left > len(remaining_set):
             p_set.remove_piece_from_grid(piece, grid)
             # put the piece back into the list

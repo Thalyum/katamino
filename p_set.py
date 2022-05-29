@@ -226,7 +226,7 @@ def dfs_grid(grid, coord, hole_size=0):
     return hole_size
 
 
-def connex_components_in_grid(grid):
+def connex_components_in_grid(grid, min_size):
     nb_components = 0
     (height, width) = grid.shape
     for i in range(height):
@@ -235,13 +235,13 @@ def connex_components_in_grid(grid):
                 nb_components += 1
                 hole_size = dfs_grid(grid, (i, j))
                 # no piece can fit in a place this small
-                if hole_size <= 2:
+                if hole_size < min_size:
                     return ERR_TOO_SMALL
     return nb_components
 
 
-def nb_holes_in_grid(grid):
-    nb_holes = connex_components_in_grid(grid)
+def nb_holes_in_grid(grid, min_size):
+    nb_holes = connex_components_in_grid(grid, min_size)
     # cleanup grid
     (height, width) = grid.shape
     for i in range(height):
