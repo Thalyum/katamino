@@ -51,7 +51,7 @@ while remaining_set:
     if p_set.check_piece(piece, grid):
         # color.print_colored_grid(grid)
         places_left = p_set.nb_holes_in_grid(grid)
-        if places_left > len(remaining_set):
+        if places_left == p_set.ERR_TOO_SMALL or places_left > len(remaining_set):
             p_set.remove_piece_from_grid(piece, grid)
             # put the piece back into the list
             remaining_set.append(piece)

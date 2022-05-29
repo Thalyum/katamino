@@ -5,6 +5,7 @@ import numpy as np
 import color
 
 DFS_MARKING = 127
+ERR_TOO_SMALL = -1
 
 
 def generate_rotation_set(piece_geo):
@@ -213,25 +214,36 @@ def remove_piece_from_grid(piece, grid):
                 grid[i, j] = 0
 
 
-def dfs_grid(grid, coord):
+def dfs_grid(grid, coord, hole_size=0):
     (i, j) = coord
     grid[i, j] = DFS_MARKING
+    hole_size += 1
     (height, width) = grid.shape
     for ni, nj in [(i + 1, j), (i, j + 1), (i - 1, j), (i, j - 1)]:
         if 0 <= ni < height and 0 <= nj < width:
             if grid[ni, nj] == 0:
-                dfs_grid(grid, (ni, nj))
+                hole_size = dfs_grid(grid, (ni, nj), hole_size)
+    return hole_size
 
 
-def nb_holes_in_grid(grid):
-    nb_holes = 0
+def connex_components_in_grid(grid):
+    nb_components = 0
     (height, width) = grid.shape
     for i in range(height):
         for j in range(width):
             if grid[i, j] == 0:
-                nb_holes += 1
-                dfs_grid(grid, (i, j))
+                nb_components += 1
+                hole_size = dfs_grid(grid, (i, j))
+                # no piece can fit in a place this small
+                if hole_size <= 2:
+                    return ERR_TOO_SMALL
+    return nb_components
+
+
+def nb_holes_in_grid(grid):
+    nb_holes = connex_components_in_grid(grid)
     # cleanup grid
+    (height, width) = grid.shape
     for i in range(height):
         for j in range(width):
             if grid[i, j] == DFS_MARKING:
