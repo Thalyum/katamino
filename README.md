@@ -1,0 +1,2 @@
+# katamino
+Katamino puzzle solver
